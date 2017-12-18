@@ -9,3 +9,4 @@
 *.opensdf
 /.vs
 /packages
+/_bin/Debug
