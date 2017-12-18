@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/a2d_input/obj
+/a2d_input.core/obj
+/_bin/Release
+*.opendb
+*.opensdf
+/.vs
