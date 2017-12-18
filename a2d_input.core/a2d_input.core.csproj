@@ -44,10 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\IAudioData.cs" />
-    <Compile Include="Devices\WaveCaptureDevice\WaveCaptureDeviceAudioData.cs" />
-    <Compile Include="Devices.cs" />
+    <Compile Include="Inputs\WaveInput\WaveInputAudioData.cs" />
+    <Compile Include="Enumerators\DeviceEnumerator.cs" />
+    <Compile Include="Enumerators\WaveInputDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Devices\WaveCaptureDevice\WaveCaptureDevice.cs" />
+    <Compile Include="Inputs\WaveInput\WaveInput.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

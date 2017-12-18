@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using a2d_input.core.Enumerators;
 using NAudio.Wave;
 
 namespace a2d_input.core
 {
-    public class WaveCaptureDevice : IDisposable
+    public class WaveInput : IDisposable
     {
-        private readonly int _deviceId;
+        private readonly WaveInputDevice _device;
         private readonly object _locker;
 
         private bool _isStarted;
         private WaveIn _waveIn;
 
-        public WaveCaptureDevice(int deviceId)
+        public WaveInput(WaveInputDevice device)
         {
-            var devices = Devices.GetWaveInDevices();
+            if (device == null) throw new ArgumentNullException(nameof(device));
 
-            var device = devices.FirstOrDefault(d => d.Item1 == deviceId);
-            if (device == null) throw new ArgumentException("Cannot find specified device");
+            var devices = DeviceEnumerator.GetWaveInDevices();
+            if (devices.All(d => d.DeviceId != device.DeviceId))
+                throw new ArgumentException("Cannot find specified device");
 
-            var capabilities = device.Item2;
-            Debug.WriteLine($"Device {deviceId}: {capabilities.ProductName} (channels: {capabilities.Channels})");
+            Debug.WriteLine(devices.ToString());
 
             _locker = new object();
-            _deviceId = deviceId;
+            _device = device;
 
             _isStarted = false;
         }
@@ -40,7 +41,7 @@ namespace a2d_input.core
         {
             lock (_locker)
             {
-                Debug.WriteLine("Starting audio capture device...");
+                Debug.WriteLine("Starting audio input...");
 
                 if (_isStarted) throw new InvalidOperationException("The device is already started");
 
@@ -48,7 +49,7 @@ namespace a2d_input.core
 
                 _waveIn = new WaveIn
                 {
-                    DeviceNumber = _deviceId,
+                    DeviceNumber = _device.DeviceId,
                     WaveFormat = new WaveFormat()
                 };
 
@@ -63,7 +64,7 @@ namespace a2d_input.core
         {
             lock (_locker)
             {
-                Debug.WriteLine("Stopping audio capture device...");
+                Debug.WriteLine("Stopping audio input...");
 
                 if (!_isStarted) return;
 
@@ -80,7 +81,7 @@ namespace a2d_input.core
         private void WaveInOnDataAvailable(object sender, WaveInEventArgs args)
         {
             var dataReady = OnDataReady;
-            var audioData = new WaveCaptureDeviceAudioData(args, _waveIn.WaveFormat);
+            var audioData = new WaveInputAudioData(args, _waveIn.WaveFormat);
 
             dataReady?.Invoke(audioData);
         }

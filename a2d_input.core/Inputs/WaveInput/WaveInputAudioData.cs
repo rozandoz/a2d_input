@@ -3,9 +3,9 @@ using NAudio.Wave;
 
 namespace a2d_input.core
 {
-    public class WaveCaptureDeviceAudioData : IAudioData
+    public class WaveInputAudioData : IAudioData
     {
-        public WaveCaptureDeviceAudioData(WaveInEventArgs waveInArgs, WaveFormat waveFormat)
+        public WaveInputAudioData(WaveInEventArgs waveInArgs, WaveFormat waveFormat)
         {
             if (waveInArgs == null) throw new ArgumentNullException(nameof(waveInArgs));
             if (waveFormat == null) throw new ArgumentNullException(nameof(waveFormat));

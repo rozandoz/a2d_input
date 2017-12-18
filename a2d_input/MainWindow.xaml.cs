@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using a2d_input.core.Enumerators;
 using NAudio.Wave;
 
 namespace a2d_input
@@ -26,7 +27,7 @@ namespace a2d_input
         {
             InitializeComponent();
 
-            var device = new WaveCaptureDevice(0);
+            var device = new WaveInput(DeviceEnumerator.GetWaveInDevices().First());
             device.Start();
             device.OnDataReady += OnDataReady;
         }
