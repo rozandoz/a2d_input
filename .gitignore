@@ -8,3 +8,4 @@
 *.opendb
 *.opensdf
 /.vs
+/packages
