@@ -1,4 +1,5 @@
-﻿using System;
+﻿using a2d_input.core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NAudio.Wave;
 
 namespace a2d_input
 {
@@ -23,6 +25,15 @@ namespace a2d_input
         public MainWindow()
         {
             InitializeComponent();
+
+            var device = new WaveCaptureDevice(0);
+            device.Start();
+            device.OnDataReady += OnDataReady;
+        }
+
+        private void OnDataReady(IAudioData obj)
+        {
+            
         }
     }
 }
