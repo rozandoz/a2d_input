@@ -5,16 +5,19 @@ namespace a2d_input.core
 {
     public class WaveCaptureDeviceAudioData : IAudioData
     {
-        private readonly WaveInEventArgs _waveInEventArgs;
-
         public WaveCaptureDeviceAudioData(WaveInEventArgs waveInArgs, WaveFormat waveFormat)
         {
-            _waveInEventArgs = waveInArgs ?? throw new ArgumentNullException(nameof(waveInArgs));
-            WaveFormat = waveFormat ?? throw new ArgumentNullException(nameof(waveFormat));
+            if (waveInArgs == null) throw new ArgumentNullException(nameof(waveInArgs));
+            if (waveFormat == null) throw new ArgumentNullException(nameof(waveFormat));
+
+            WaveFormat = waveFormat;
+            WaveInEventArgs = waveInArgs;
         }
 
+        private WaveInEventArgs WaveInEventArgs { get; }
 
-        public byte[] Data => _waveInEventArgs.Buffer;
+        public byte[] Data => WaveInEventArgs.Buffer;
+
         public WaveFormat WaveFormat { get; }
     }
 }
