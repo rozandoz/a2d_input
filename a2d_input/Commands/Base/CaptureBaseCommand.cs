@@ -2,7 +2,7 @@
 
 namespace a2d_input.Commands
 {
-    internal class CaptureBaseCommand
+    internal abstract class CaptureBaseCommand : CommandOptions
     {
         private const string DeviceHelpText = "The number of the input audio device. " +
                                               "To get a list of the available inputs 'devices' command can be used.";

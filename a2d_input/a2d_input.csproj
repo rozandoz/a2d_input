@@ -47,9 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Base\CaptureBaseCommand.cs" />
-    <Compile Include="Commands\GetDevicesCommand.cs" />
-    <Compile Include="Commands\CaptureSignalCommand.cs" />
-    <Compile Include="Commands\TestSignalCommand.cs" />
+    <Compile Include="Commands\Base\CommandHandler.cs" />
+    <Compile Include="Commands\Base\CommandOptions.cs" />
+    <Compile Include="Commands\Base\IHandler.cs" />
+    <Compile Include="Commands\GetdevicesCommand\GetDevicesHandler.cs" />
+    <Compile Include="Commands\GetdevicesCommand\GetDevicesOptions.cs" />
+    <Compile Include="Commands\TestSignalCommand\TestSignalHandler.cs" />
+    <Compile Include="Commands\TestSignalCommand\TestSignalOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

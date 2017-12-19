@@ -12,7 +12,7 @@ namespace a2d_input.core
         private readonly object _locker;
 
         private bool _isStarted;
-        private WaveIn _waveIn;
+        private WaveInEvent _waveIn;
 
         public WaveInput(WaveInputDevice device)
         {
@@ -47,7 +47,7 @@ namespace a2d_input.core
 
                 _isStarted = false;
 
-                _waveIn = new WaveIn
+                _waveIn = new WaveInEvent()
                 {
                     DeviceNumber = _device.DeviceId,
                     WaveFormat = new WaveFormat()
