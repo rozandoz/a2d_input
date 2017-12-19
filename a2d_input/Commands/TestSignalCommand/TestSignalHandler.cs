@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using a2d_input.core;
 using a2d_input.core.Enumerators;
+using a2d_input.core.Extensions;
+using NAudio.Wave;
 
 namespace a2d_input.Commands
 {
@@ -10,6 +12,9 @@ namespace a2d_input.Commands
     {
         private readonly Task _captureThread;
         private readonly CancellationTokenSource _tokenSource;
+
+        private float _maxValue;
+        private float _minValue;
 
         public TestSignalHandler(TestSignalOptions options)
             : base(options)
@@ -25,10 +30,14 @@ namespace a2d_input.Commands
             var device = DeviceEnumerator.GetWaveInDeviceById(Options.DeviceId);
             if (device == null) throw new InvalidOperationException($"Device '{Options.DeviceId}' is not found");
 
-            using (var input = new WaveInput(device))
+            var waveFormat = new WaveFormat(44100, 16, 2);
+
+            using (var input = new WaveInput(device, waveFormat))
             {
                 input.OnDataReady += OnDataReady;
                 input.Start();
+
+                Console.WriteLine($"Wave input is started ({waveFormat})");
 
                 while (!token.IsCancellationRequested)
                 {
@@ -40,8 +49,39 @@ namespace a2d_input.Commands
         }
 
 
-        private static void OnDataReady(IAudioData audioData)
+        private void OnDataReady(IAudioData audioData)
         {
+            var channel = Options.Channel;
+
+            var bytes = audioData.Data;
+            var waveFormat = audioData.WaveFormat;
+
+            if (waveFormat.BitsPerSample != 16 || waveFormat.Channels != 2)
+                throw new NotSupportedException("Format is not supported");
+
+            var samples = bytes.ToInt16();
+
+            short maxValue = 0;
+            short minValue = 0;
+
+            for (var i = channel; i < samples.Length - channel; i += 2)
+            {
+                var sample = samples[i];
+
+                maxValue = Math.Max(sample, maxValue);
+                minValue = Math.Min(sample, minValue);
+            }
+
+            var min = (float) minValue/short.MinValue;
+            var max = (float) maxValue/short.MaxValue;
+
+            if (Math.Abs(min - _minValue) >= 0.01 || Math.Abs(max - _maxValue) >= 0.01)
+            {
+                _minValue = min;
+                _maxValue = max;
+
+                Console.WriteLine($"Min: -{min:F2} \t Max: {max:F2}");
+            }
         }
 
         protected override int OnRun(TestSignalOptions options)
@@ -53,13 +93,16 @@ namespace a2d_input.Commands
                 var keyInfo = Console.ReadKey();
                 if (keyInfo.Key == ConsoleKey.Escape)
                 {
-                    Console.WriteLine("Closing...");
                     break;
                 }
             }
 
+            Console.WriteLine("Closing wave input...");
+
             _tokenSource.Cancel();
             _captureThread.Wait();
+
+            Console.WriteLine("Wave input is closed.");
 
             return 0;
         }

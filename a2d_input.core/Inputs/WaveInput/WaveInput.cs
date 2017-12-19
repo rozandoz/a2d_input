@@ -9,23 +9,26 @@ namespace a2d_input.core
     public class WaveInput : IDisposable
     {
         private readonly WaveInputDevice _device;
+        private readonly WaveFormat _format;
         private readonly object _locker;
 
         private bool _isStarted;
         private WaveInEvent _waveIn;
 
-        public WaveInput(WaveInputDevice device)
+        public WaveInput(WaveInputDevice device, WaveFormat format)
         {
             if (device == null) throw new ArgumentNullException(nameof(device));
+            if (format == null) throw new ArgumentNullException(nameof(format));
 
             var devices = DeviceEnumerator.GetWaveInDevices();
             if (devices.All(d => d.DeviceId != device.DeviceId))
                 throw new ArgumentException("Cannot find specified device");
 
-            Debug.WriteLine(devices.ToString());
+            Debug.WriteLine(device.ToString());
 
             _locker = new object();
             _device = device;
+            _format = format;
 
             _isStarted = false;
         }
@@ -50,7 +53,7 @@ namespace a2d_input.core
                 _waveIn = new WaveInEvent()
                 {
                     DeviceNumber = _device.DeviceId,
-                    WaveFormat = new WaveFormat()
+                    WaveFormat = _format
                 };
 
                 _waveIn.DataAvailable += WaveInOnDataAvailable;

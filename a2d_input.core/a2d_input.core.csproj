@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Extensions\BytesExtensions.cs" />
     <Compile Include="Common\IAudioData.cs" />
     <Compile Include="Inputs\WaveInput\WaveInputAudioData.cs" />
     <Compile Include="Enumerators\DeviceEnumerator.cs" />
