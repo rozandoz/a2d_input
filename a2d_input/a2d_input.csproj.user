@@ -4,6 +4,6 @@
     <StartArguments>devices</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>devices</StartArguments>
+    <StartArguments>test -c0 -d0</StartArguments>
   </PropertyGroup>
 </Project>

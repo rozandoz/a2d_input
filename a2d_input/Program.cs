@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using a2d_input.Commands;
 using CommandLine;
 
@@ -9,20 +8,12 @@ namespace a2d_input
     {
         private static void Main(string[] args)
         {
-            var parserResult = Parser.Default.ParseArguments<GetDevicesCommand, RunHookerCommand>(args);
-            var erros = parserResult.Errors.ToList();
+            var parserResult = Parser.Default.ParseArguments<GetDevicesCommand, TestSignalCommand>(args);
 
-            if (erros.Any())
-            {
-                foreach (var error in erros)
-                    Console.WriteLine(error);
-            }
-            else
-            {
-                if (parserResult.Value is GetDevicesCommand deviceCommand)
-                    GetDevicesCommand.Run(deviceCommand);
-            }
+            var devicesCommand = new Func<GetDevicesCommand, int>(GetDevicesCommand.Run);
+            var testCommand = new Func<TestSignalCommand, int>(TestSignalCommand.Run);
 
+            parserResult.MapResult(devicesCommand, testCommand, errs => 1);
 
             Console.ReadKey();
         }
